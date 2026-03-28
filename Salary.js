@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Salary() {
   const navigate = useNavigate();
+  const logout = ( ) => {
+    localStorage.removeItem("isLoggedIn");
+    navigate("/");
+  };
+  useEffect(() =>{
+    if(!localStorage.getItem("isLoggedIn")){
+        navigate("/");
+    }
+  } , []);
 
   const [records, setRecords] = useState([]);
   const [name, setName] = useState("");
@@ -39,7 +48,7 @@ function Salary() {
     <div style={{ padding: "20px", textAlign: "center" }}>
       
       <button onClick={() => navigate("/dashboard")}>⬅ Back</button>
-
+       <button onClick={logout}> Logout</button>
       <h2>Salary Management</h2>
 
       <input
