@@ -5,8 +5,19 @@ import { FaMoneyBill, FaUserCheck } from "react-icons/fa";
 function Dashboard() {
   const navigate = useNavigate();
 
+  const logout = () => {
+    localStorage.removeItem("isLoggedIn");
+    navigate("/");
+  };
+
   return (
     <div style={styles.container}>
+      
+      <div style={styles.topBar}>
+        <button onClick={() => navigate("/")}>⬅ Login Page</button>
+        <button onClick={logout}>🚪 Logout</button>
+      </div>
+
       <h1 style={styles.title}>Bandhan Cafe</h1>
       <p style={styles.subtitle}>Management Dashboard</p>
 
@@ -32,9 +43,13 @@ const styles = {
     textAlign: "center",
     marginTop: "50px",
   },
+  topBar: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "10px 20px",
+  },
   title: {
     fontSize: "40px",
-    color: "#333",
   },
   subtitle: {
     color: "gray",
@@ -56,7 +71,6 @@ const styles = {
     alignItems: "center",
     cursor: "pointer",
     boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-    transition: "0.3s",
   },
 };
 
