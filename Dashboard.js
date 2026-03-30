@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaMoneyBill, FaUserCheck } from "react-icons/fa";
+import { FaMoneyBill, FaUserCheck, FaChartLine } from "react-icons/fa";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -11,26 +11,50 @@ function Dashboard() {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
       
-      <div style={styles.topBar}>
+      {/* Top Buttons */}
+      <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 20px" }}>
         <button onClick={() => navigate("/")}>⬅ Login Page</button>
         <button onClick={logout}>🚪 Logout</button>
       </div>
 
-      <h1 style={styles.title}>Bandhan Cafe</h1>
-      <p style={styles.subtitle}>Management Dashboard</p>
+      <h1>Bandhan Cafe</h1>
+      <p>Management Dashboard</p>
 
-      <div style={styles.cardContainer}>
-        
-        <div style={styles.card} onClick={() => navigate("/salary")}>
+      {/* Cards */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "30px",
+        marginTop: "40px"
+      }}>
+
+        {/* Salary */}
+        <div
+          style={cardStyle}
+          onClick={() => navigate("/salary")}
+        >
           <FaMoneyBill size={40} />
           <h2>Salary</h2>
         </div>
 
-        <div style={styles.card} onClick={() => navigate("/attendance")}>
+        {/* Attendance */}
+        <div
+          style={cardStyle}
+          onClick={() => navigate("/attendance")}
+        >
           <FaUserCheck size={40} />
           <h2>Attendance</h2>
+        </div>
+
+        {/* Finance */}
+        <div
+          style={cardStyle}
+          onClick={() => navigate("/finance")}
+        >
+          <FaChartLine size={40} color="#2ecc71" />
+          <h2>Finance</h2>
         </div>
 
       </div>
@@ -38,40 +62,19 @@ function Dashboard() {
   );
 }
 
-const styles = {
-  container: {
-    textAlign: "center",
-    marginTop: "50px",
-  },
-  topBar: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "10px 20px",
-  },
-  title: {
-    fontSize: "40px",
-  },
-  subtitle: {
-    color: "gray",
-  },
-  cardContainer: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "30px",
-    marginTop: "50px",
-  },
-  card: {
-    width: "200px",
-    height: "150px",
-    background: "#f5f5f5",
-    borderRadius: "15px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-  },
+// ✅ Card Style
+const cardStyle = {
+  width: "200px",
+  height: "150px",
+  background: "#ffffff",
+  borderRadius: "15px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  cursor: "pointer",
+  boxShadow: "0 6px 15px rgba(0,0,0,0.15)",
+  transition: "0.3s",
 };
 
 export default Dashboard;
