@@ -4,146 +4,254 @@ import { useNavigate } from "react-router-dom";
 function Salary() {
   const navigate = useNavigate();
 
-  const logout = () => {
-    localStorage.removeItem("isLoggedIn");
-    navigate("/");
-  };
-
   const [records, setRecords] = useState([]);
   const [name, setName] = useState("");
   const [salary, setSalary] = useState("");
   const [extra, setExtra] = useState("");
 
-  // 🔐 protect + load data
+  // 🔐 Protect page + load data
   useEffect(() => {
-    if (!localStorage.getItem("isLoggedIn")) {
+    if (localStorage.getItem("isLoggedIn") !== "true") {
       navigate("/");
     }
     fetchSalary();
-  }, [navigate]);
+  }, []);
 
-  // ✅ fetch data
-  const fetchSalary = async () => {
-    const res = await fetch("http://localhost:5000/api/salary");
-    const data = await res.json();
-    setRecords(data);
+  // 🚪 Logout
+  const logout = () => {
+    localStorage.removeItem("isLoggedIn");
+    navigate("/");
   };
 
-  // ✅ add record
-  const addRecord = async () => {
-    if (!name || !salary) {
-      alert("Enter all fields");
-      return;
+  // 📥 Fetch data (SAFE)
+  const fetchSalary = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/salary");
+
+      if (!res.ok) throw new Error("Fetch failed");
+
+      const data = await res.json();
+      setRecords(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.log(error);
+      setRecords([]);
     }
+  };
+
+  // ➕ Add record
+  const addRecord = async () => {
+    if (!name || !salary) return;
 
     const today = new Date().toLocaleDateString();
-    const finalSalary = salary - (extra || 0);
+    const finalSalary = Number(salary) - Number(extra || 0);
 
-    await fetch("http://localhost:5000/api/salary", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        date: today,
-        name,
-        salary,
-        extra,
-        final: finalSalary,
-      }),
-    });
+    try {
+      await fetch("http://localhost:5000/api/salary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date: today,
+          name,
+          salary: Number(salary),
+          extra: Number(extra || 0),
+          final: finalSalary,
+        }),
+      });
 
-    alert("Salary saved ✅");
+      setName("");
+      setSalary("");
+      setExtra("");
 
-    setName("");
-    setSalary("");
-    setExtra("");
-
-    fetchSalary();
+      fetchSalary();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // ❌ delete record
+  // ❌ Delete record
   const deleteRecord = async (id) => {
-    await fetch(`http://localhost:5000/api/salary/${id}`, {
-      method: "DELETE",
-    });
+    if (!id) return;
 
-    alert("Deleted successfully ❌");
-    fetchSalary();
+    try {
+      await fetch(`http://localhost:5000/api/salary/${id}`, {
+        method: "DELETE",
+      });
+
+      fetchSalary();
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  // 🔥 Prevent crash
+  if (!Array.isArray(records)) {
+    return <h2>Loading...</h2>;
+  }
 
   return (
-    <div style={{ padding: "20px", textAlign: "center" }}>
-      <button onClick={() => navigate("/dashboard")}>⬅ Back</button>
-      <button onClick={logout}>🚪 Logout</button>
+    <div style={styles.container}>
+      
+      {/* Top Bar */}
+      <div style={styles.topBar}>
+        <button style={styles.navBtn} onClick={() => navigate("/dashboard")}>
+          ⬅ Back
+        </button>
+        <button style={styles.logoutBtn} onClick={logout}>
+          🚪 Logout
+        </button>
+      </div>
 
-      <h2>Salary Management</h2>
+      <h2 style={styles.heading}>Salary Management</h2>
 
-      <input
-        placeholder="Worker Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{ margin: "5px", padding: "8px" }}
-      />
+      {/* Inputs */}
+      <div style={styles.inputContainer}>
+        <input
+          placeholder="Worker Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={styles.input}
+        />
 
-      <input
-        type="number"
-        placeholder="Salary"
-        value={salary}
-        onChange={(e) => setSalary(e.target.value)}
-        style={{ margin: "5px", padding: "8px" }}
-      />
+        <input
+          type="number"
+          placeholder="Salary"
+          value={salary}
+          onChange={(e) => setSalary(e.target.value)}
+          style={styles.input}
+        />
 
-      <input
-        type="number"
-        placeholder="Extra (Advance)"
-        value={extra}
-        onChange={(e) => setExtra(e.target.value)}
-        style={{ margin: "5px", padding: "8px" }}
-      />
+        <input
+          type="number"
+          placeholder="Extra (Advance)"
+          value={extra}
+          onChange={(e) => setExtra(e.target.value)}
+          style={styles.input}
+          onKeyDown={(e) => e.key === "Enter" && addRecord()}
+        />
+      </div>
 
-      <br />
-
-      <button onClick={addRecord} style={{ marginTop: "10px" }}>
+      {/* Button */}
+      <button style={styles.addBtn} onClick={addRecord}>
         Add Record
       </button>
 
-      <br /><br />
-
-      <table border="1" style={{ margin: "auto", width: "90%" }}>
+      {/* Table */}
+      <table style={styles.table}>
         <thead>
           <tr>
-            <th>Sr No</th>
-            <th>Date</th>
-            <th>Worker Name</th>
-            <th>Salary (₹)</th>
-            <th>Extra Given (₹)</th>
-            <th>Final Salary (₹)</th>
-            <th>Action</th> {/* ✅ new column */}
+            <th style={styles.th}>No</th>
+            <th style={styles.th}>Date</th>
+            <th style={styles.th}>Name</th>
+            <th style={styles.th}>Salary</th>
+            <th style={styles.th}>Extra</th>
+            <th style={styles.th}>Final</th>
+            <th style={styles.th}>Action</th>
           </tr>
         </thead>
 
         <tbody>
-          {records.map((rec, index) => (
-            <tr key={rec._id}> {/* ✅ important */}
-              <td>{index + 1}</td>
-              <td>{rec.date}</td>
-              <td>{rec.name}</td>
-              <td>₹{rec.salary}</td>
-              <td style={{ color: "red" }}>₹{rec.extra}</td>
-              <td style={{ color: "green" }}>₹{rec.final}</td>
-
-              <td>
-                <button onClick={() => deleteRecord(rec._id)}>
-                  ❌ Delete
-                </button>
-              </td>
+          {records.length === 0 ? (
+            <tr>
+              <td colSpan="7">No data available</td>
             </tr>
-          ))}
+          ) : (
+            records.map((rec, index) => (
+              <tr key={rec?._id || index}>
+                <td style={styles.td}>{index + 1}</td>
+                <td style={styles.td}>{rec?.date || "-"}</td>
+                <td style={styles.td}>{rec?.name || "-"}</td>
+                <td style={styles.td}>₹{rec?.salary || 0}</td>
+                <td style={{ ...styles.td, color: "red" }}>
+                  ₹{rec?.extra || 0}
+                </td>
+                <td style={{ ...styles.td, color: "green", fontWeight: "bold" }}>
+                  ₹{rec?.final || 0}
+                </td>
+                <td style={styles.td}>
+                  <button
+                    style={styles.deleteBtn}
+                    onClick={() => deleteRecord(rec?._id)}
+                  >
+                    ❌
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
+
     </div>
   );
 }
+
+// 🎨 Styles
+const styles = {
+  container: {
+    textAlign: "center",
+    padding: "20px",
+  },
+  topBar: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "20px",
+  },
+  heading: {
+    marginBottom: "20px",
+  },
+  inputContainer: {
+    marginBottom: "10px",
+  },
+  input: {
+    padding: "10px",
+    margin: "5px",
+    width: "200px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+  },
+  addBtn: {
+    padding: "10px 20px",
+    background: "#3498db",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    marginTop: "10px",
+  },
+  navBtn: {
+    padding: "8px 15px",
+    cursor: "pointer",
+  },
+  logoutBtn: {
+    padding: "8px 15px",
+    background: "#333",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+  },
+  table: {
+    width: "90%",
+    margin: "30px auto",
+    borderCollapse: "collapse",
+  },
+  th: {
+    background: "#3498db",
+    color: "#fff",
+    padding: "10px",
+  },
+  td: {
+    padding: "10px",
+    border: "1px solid #ddd",
+  },
+  deleteBtn: {
+    background: "red",
+    color: "#fff",
+    border: "none",
+    padding: "5px 10px",
+    cursor: "pointer",
+  },
+};
 
 export default Salary;

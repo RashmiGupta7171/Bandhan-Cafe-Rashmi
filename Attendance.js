@@ -13,7 +13,7 @@ function Attendance() {
       navigate("/");
     }
     fetchAttendance();
-  }, [navigate]);
+  }, []);
 
   // 🚪 Logout
   const logout = () => {
@@ -21,13 +21,18 @@ function Attendance() {
     navigate("/");
   };
 
-  // 📥 Fetch data
+  // 📥 Fetch data (SAFE)
   const fetchAttendance = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/attendance");
+
+      if (!res.ok) throw new Error("Fetch failed");
+
       const data = await res.json();
+
       setRecords(Array.isArray(data) ? data : []);
-    } catch {
+    } catch (error) {
+      console.log("Error:", error);
       setRecords([]);
     }
   };
@@ -36,32 +41,45 @@ function Attendance() {
   const markAttendance = async (status) => {
     if (!name) return;
 
-    const today = new Date().toLocaleDateString();
+    try {
+      await fetch("http://localhost:5000/api/attendance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date: new Date().toLocaleDateString(),
+          name,
+          status,
+        }),
+      });
 
-    await fetch("http://localhost:5000/api/attendance", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        date: today,
-        name,
-        status,
-      }),
-    });
-
-    setName("");
-    fetchAttendance();
+      setName("");
+      fetchAttendance();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // ❌ Delete
   const deleteRecord = async (id) => {
-    await fetch(`http://localhost:5000/api/attendance/${id}`, {
-      method: "DELETE",
-    });
+    if (!id) return;
 
-    fetchAttendance();
+    try {
+      await fetch(`http://localhost:5000/api/attendance/${id}`, {
+        method: "DELETE",
+      });
+
+      fetchAttendance();
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  // 🔥 Prevent crash
+  if (!Array.isArray(records)) {
+    return <h2>Loading...</h2>;
+  }
 
   return (
     <div style={styles.container}>
@@ -78,30 +96,21 @@ function Attendance() {
 
       <h2 style={styles.heading}>Attendance Management</h2>
 
-      {/* Input Section */}
-      <div style={styles.inputContainer}>
-        <input
-          placeholder="Worker Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={styles.input}
-          onKeyDown={(e) => e.key === "Enter" && markAttendance("Present")}
-        />
-      </div>
+      {/* Input */}
+      <input
+        placeholder="Worker Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        style={styles.input}
+        onKeyDown={(e) => e.key === "Enter" && markAttendance("Present")}
+      />
 
       {/* Buttons */}
       <div style={styles.buttonGroup}>
-        <button
-          style={styles.presentBtn}
-          onClick={() => markAttendance("Present")}
-        >
+        <button style={styles.presentBtn} onClick={() => markAttendance("Present")}>
           Present
         </button>
-
-        <button
-          style={styles.absentBtn}
-          onClick={() => markAttendance("Absent")}
-        >
+        <button style={styles.absentBtn} onClick={() => markAttendance("Absent")}>
           Absent
         </button>
       </div>
@@ -119,35 +128,43 @@ function Attendance() {
         </thead>
 
         <tbody>
-          {records.map((r, i) => (
-            <tr key={r._id || i}>
-              <td style={styles.td}>{i + 1}</td>
-              <td style={styles.td}>{r.date}</td>
-              <td style={styles.td}>{r.name}</td>
-              <td
-                style={{
-                  ...styles.td,
-                  color: r.status === "Present" ? "green" : "red",
-                  fontWeight: "bold",
-                }}
-              >
-                {r.status}
-              </td>
-              <td style={styles.td}>
-                <button style={styles.deleteBtn} onClick={() => deleteRecord(r._id)}>
-                  ❌
-                </button>
-              </td>
+          {records.length === 0 ? (
+            <tr>
+              <td colSpan="5">No records found</td>
             </tr>
-          ))}
+          ) : (
+            records.map((r, i) => (
+              <tr key={r?._id || i}>
+                <td style={styles.td}>{i + 1}</td>
+                <td style={styles.td}>{r?.date || "-"}</td>
+                <td style={styles.td}>{r?.name || "-"}</td>
+                <td
+                  style={{
+                    ...styles.td,
+                    color: r?.status === "Present" ? "green" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {r?.status || "-"}
+                </td>
+                <td style={styles.td}>
+                  <button
+                    style={styles.deleteBtn}
+                    onClick={() => deleteRecord(r?._id)}
+                  >
+                    ❌
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
-
     </div>
   );
 }
 
-// 🎨 STYLES (MATCHES OTHER PAGES)
+// 🎨 Styles
 const styles = {
   container: {
     textAlign: "center",
@@ -160,9 +177,6 @@ const styles = {
   },
   heading: {
     marginBottom: "20px",
-  },
-  inputContainer: {
-    marginBottom: "10px",
   },
   input: {
     padding: "10px",
