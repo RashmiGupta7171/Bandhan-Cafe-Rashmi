@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Attendance = require("../models/Attendance");
+const Attendance = require("../models/AttendanceModels");
 
 // Add attendance
 router.post("/", async (req, res) => {

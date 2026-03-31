@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Salary = require("../models/Salary");
+const Salary = require("../models/SalaryModels");
 
 // ✅ Add salary record
 router.post("/", async (req, res) => {

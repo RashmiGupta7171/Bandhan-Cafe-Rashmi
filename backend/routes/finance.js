@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Finance = require("../models/Finance");
+const Finance = require("../models/FinanceModels");
 
 // ➕ Add finance
 router.post("/", async (req, res) => {
