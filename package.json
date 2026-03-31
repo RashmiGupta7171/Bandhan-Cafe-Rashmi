@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "bandhan",
   "version": "0.1.0",
   "private": true,
@@ -42,4 +43,23 @@
       "last 1 safari version"
     ]
   }
+=======
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.3",
+    "nodemon": "^3.1.14"
+  },
+  "description": ""
+>>>>>>> 0debc6106beeb2298db58b4673b6a68625b879dd
 }

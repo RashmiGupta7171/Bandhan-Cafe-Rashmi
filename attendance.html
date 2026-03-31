@@ -1,0 +1,44 @@
+<script>
+if (!localStorage.getItem("auth")) {
+  window.location.href = "login.html";
+}
+</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Workers</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+if (!localStorage.getItem("auth")) location.href="login.html";
+</script>
+
+<h1>Workers</h1>
+
+<input type="text" id="name" placeholder="Name">
+<input type="number" id="salary" placeholder="Monthly Salary">
+<input type="number" id="daily" placeholder="Daily Paid">
+
+<button onclick="addWorker()">Add</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Salary</th>
+      <th>Daily Paid</th>
+    </tr>
+  </thead>
+  <tbody id="workerTable"></tbody>
+</table>
+
+<div class="nav">
+  <a href="index.html">Finance</a>
+  <a href="attendance.html">Attendance</a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
