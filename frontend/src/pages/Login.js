@@ -7,6 +7,7 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // 🔐 If already logged in → go dashboard
@@ -23,6 +24,9 @@ function Login() {
     }
 
     try {
+      setLoading(true);
+      setError("");
+
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: {
@@ -31,18 +35,22 @@ function Login() {
         body: JSON.stringify({ username, password }),
       });
 
-      if (!res.ok) {
-        setError("Invalid username or password ❌");
-        return;
+      const data = await res.json();
+
+      if (res.ok) {
+        // ✅ Success
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/dashboard");
+      } else {
+        // ❌ Backend error
+        setError(data.message || "Invalid username or password ❌");
       }
 
-      // ✅ Success
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/dashboard");
-
     } catch (err) {
-      console.log(err);
-      setError("Server not responding ⚠️");
+      console.log("ERROR:", err);
+      setError("Cannot connect to server ⚠️");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,12 +86,17 @@ function Login() {
           </span>
         </div>
 
-        {/* Error */}
+        {/* Error / Loading */}
+        {loading && <p style={{ color: "blue" }}>Connecting to server...</p>}
         {error && <p style={styles.error}>{error}</p>}
 
         {/* Button */}
-        <button style={styles.button} onClick={handleLogin}>
-          Login
+        <button
+          style={styles.button}
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "Login"}
         </button>
       </div>
     </div>

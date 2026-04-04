@@ -7,6 +7,10 @@ router.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    if (!username || !password) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -15,8 +19,10 @@ router.post("/register", async (req, res) => {
     const user = new User({ username, password });
     await user.save();
 
-    res.json({ message: "User registered successfully" });
+    res.status(201).json({ message: "User registered successfully" });
+
   } catch (error) {
+    console.error("REGISTER ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -27,18 +33,26 @@ router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ username });
-
-    if (!user || user.password !== password) {
-      return res.status(400).json({
-        message: "Invalid username or password",
-      });
+    if (!username || !password) {
+      return res.status(400).json({ message: "All fields required" });
     }
 
-    res.json({
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    if (user.password !== password) {
+      return res.status(400).json({ message: "Wrong password" });
+    }
+
+    res.status(200).json({
       message: "Login successful",
     });
+
   } catch (error) {
+    console.error("LOGIN ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -49,6 +63,10 @@ router.post("/reset-password", async (req, res) => {
   try {
     const { username, newPassword } = req.body;
 
+    if (!username || !newPassword) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -58,11 +76,12 @@ router.post("/reset-password", async (req, res) => {
     user.password = newPassword;
     await user.save();
 
-    res.json({ message: "Password updated successfully" });
+    res.status(200).json({ message: "Password updated successfully" });
+
   } catch (error) {
+    console.error("RESET ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 module.exports = router;

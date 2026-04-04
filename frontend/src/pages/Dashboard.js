@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaMoneyBill, FaUserCheck, FaChartLine } from "react-icons/fa";
+console.log("New change for PR");
 
 function Dashboard() {
   const navigate = useNavigate();
