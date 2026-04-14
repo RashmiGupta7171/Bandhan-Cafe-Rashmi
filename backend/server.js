@@ -37,15 +37,28 @@
 //     process.exit(1); // stop app if DB fails
 //   });
 
+// const express = require("express");
+// const app = express();
+
+// const PORT = process.env.PORT || 5000;
+
+// app.get("/", (req, res) => {
+//   res.send("Server is running ✅");
+// });
+
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
 const express = require("express");
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
-  res.send("Server is running ✅");
+  res.send("Yay! Server is working 🎉");
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running on port " + PORT);
 });
