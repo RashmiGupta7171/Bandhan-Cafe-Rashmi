@@ -9,10 +9,10 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/salary", require("./routes/salary"));
-app.use("/api/attendance", require("./routes/attendance"));
-app.use("/api/finance", require("./routes/finance"));
+// app.use("/api/auth", require("./routes/auth"));
+// app.use("/api/salary", require("./routes/salary"));
+// app.use("/api/attendance", require("./routes/attendance"));
+// app.use("/api/finance", require("./routes/finance"));
 
 // Test route
 app.get("/", (req, res) => {
