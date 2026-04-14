@@ -63,23 +63,54 @@
 //   console.log("Server running on port " + PORT);
 // });
 
+// const express = require("express");
+// const mongoose = require("mongoose");
+
+// const app = express();
+
+// const PORT = process.env.PORT || 5000;
+
+// app.get("/", (req, res) => {
+//   res.send("Server working ✅");
+// });
+
+// mongoose.connect(process.env.MONGO_URI)
+//   .then(() => {
+//     console.log("MongoDB Connected ✅");
+
+//     app.listen(PORT, () => {
+//       console.log(`Server running on port ${PORT}`);
+//     });
+//   })
+//   .catch((err) => {
+//     console.log("MongoDB Error ❌", err);
+//   });
+
+
+
 const express = require("express");
 const mongoose = require("mongoose");
 
 const app = express();
-
 const PORT = process.env.PORT || 5000;
 
+// TEST ROUTE
 app.get("/", (req, res) => {
-  res.send("Server working ✅");
+  res.send("Server running ✅");
 });
+
+// ❗ DO NOT LOAD ROUTES YET
+// app.use("/api/auth", require("./routes/auth"));
+// app.use("/api/salary", require("./routes/salary"));
+// app.use("/api/attendance", require("./routes/attendance"));
+// app.use("/api/finance", require("./routes/finance"));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected ✅");
 
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log("Server running on port " + PORT);
     });
   })
   .catch((err) => {
