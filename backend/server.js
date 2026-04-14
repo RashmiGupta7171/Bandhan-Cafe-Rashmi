@@ -19,16 +19,20 @@ app.get("/", (req, res) => {
   res.send("Backend working ✅");
 });
 
-// ✅ MongoDB Connection (FIXED)
-mongoose.connect("mongodb://127.0.0.1:27017/bandhanCafe")
+// ✅ PORT for Render (IMPORTANT)
+const PORT = process.env.PORT || 5000;
+
+// ✅ MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected ✅");
 
-    // Start server ONLY after DB connects
-    app.listen(5000, () => {
-      console.log("Server running on port 5000 🚀");
+    // Start server only after DB connects
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT} 🚀`);
     });
   })
   .catch((err) => {
-    console.log("MongoDB Error ❌", err);
+    console.error("MongoDB Error ❌", err);
+    process.exit(1); // stop app if DB fails
   });
