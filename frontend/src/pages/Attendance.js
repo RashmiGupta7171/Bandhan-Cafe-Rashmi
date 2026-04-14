@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +9,7 @@ function Attendance() {
   const [name, setName] = useState("");
 
   // 🔐 Protect page + load data
+  
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn") !== "true") {
       navigate("/");
