@@ -1,13 +1,16 @@
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaMoneyBill, FaUserCheck, FaChartLine } from "react-icons/fa";
-
+import {
+  FaMoneyBill,
+  FaUserCheck,
+  FaChartLine,
+  FaUtensils
+} from "react-icons/fa";
 
 function Dashboard() {
   const navigate = useNavigate();
 
-  // 🔐 Protect page
+  // 🔐 Protect page (login check)
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn") !== "true") {
       navigate("/");
@@ -23,7 +26,7 @@ function Dashboard() {
   return (
     <div style={styles.container}>
       
-      {/* Top Bar */}
+      {/* 🔝 Top Bar */}
       <div style={styles.topBar}>
         <button style={styles.navBtn} onClick={() => navigate("/")}>
           ⬅ Login Page
@@ -33,44 +36,41 @@ function Dashboard() {
         </button>
       </div>
 
-      {/* Title */}
+      {/* 🏷 Title */}
       <h1 style={styles.title}>☕ Bandhan Cafe</h1>
       <p style={styles.subtitle}>Management Dashboard</p>
 
-      {/* Cards */}
+      {/* 📦 Cards Section */}
       <div style={styles.cardContainer}>
 
-        {/* Salary */}
-        <div
-          style={styles.card}
-          onClick={() => navigate("/salary")}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        >
+        {/* 💰 Salary */}
+        <div style={styles.card} onClick={() => navigate("/salary")}>
           <FaMoneyBill size={60} color="#3498db" />
           <h2>Salary</h2>
         </div>
 
-        {/* Attendance */}
-        <div
-          style={styles.card}
-          onClick={() => navigate("/attendance")}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        >
+        {/* 📅 Attendance */}
+        <div style={styles.card} onClick={() => navigate("/attendance")}>
           <FaUserCheck size={60} color="#e67e22" />
           <h2>Attendance</h2>
         </div>
 
-        {/* Finance */}
-        <div
-          style={styles.card}
-          onClick={() => navigate("/finance")}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        >
+        {/* 📊 Finance */}
+        <div style={styles.card} onClick={() => navigate("/finance")}>
           <FaChartLine size={60} color="#2ecc71" />
           <h2>Finance</h2>
+        </div>
+
+        {/* 🍽️ Menu / Billing */}
+        <div style={styles.card} onClick={() => navigate("/billing")}>
+          <FaUtensils size={60} color="#9b59b6" />
+          <h2>Menu</h2>
+        </div>
+
+        {/* 📈 Charts */}
+        <div style={styles.card} onClick={() => navigate("/charts")}>
+          <FaChartLine size={60} color="#e74c3c" />
+          <h2>Charts</h2>
         </div>
 
       </div>
@@ -84,15 +84,18 @@ const styles = {
     textAlign: "center",
     marginTop: "40px",
   },
+
   topBar: {
     display: "flex",
     justifyContent: "space-between",
     padding: "10px 20px",
   },
+
   navBtn: {
     padding: "8px 15px",
     cursor: "pointer",
   },
+
   logoutBtn: {
     padding: "8px 15px",
     background: "#333",
@@ -100,18 +103,23 @@ const styles = {
     border: "none",
     cursor: "pointer",
   },
+
   title: {
     marginTop: "20px",
   },
+
   subtitle: {
     color: "gray",
   },
+
   cardContainer: {
     display: "flex",
+    flexWrap: "wrap",
     justifyContent: "center",
     gap: "40px",
     marginTop: "50px",
   },
+
   card: {
     width: "220px",
     height: "160px",
