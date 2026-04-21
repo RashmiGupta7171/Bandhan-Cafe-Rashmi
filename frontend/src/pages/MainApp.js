@@ -84,7 +84,7 @@ function MainApp() {
 
   return (
     <div>
-      <h1>Bandhan Wine & Dine</h1>
+      <h1>Bandhan Cafe</h1>
 
       <div className="container">
         {/* 🍽️ MENU */}
