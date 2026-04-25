@@ -6,9 +6,40 @@ function Billing({
   changeQty,
   removeItem,
   grandTotal,
-  cancelBill,
-  printBill
+  cancelBill
 }) {
+
+  // ✅ SAVE DATA FOR CHARTS
+  const saveSalesData = () => {
+    const existing = JSON.parse(localStorage.getItem("salesData")) || [];
+
+    const today = new Date().toLocaleDateString("en-GB");
+
+    const newData = bill.map(item => ({
+      item: item.name,
+      qty: item.qty,
+      price: item.price,
+      total: item.price * item.qty,
+      date: today
+    }));
+
+    localStorage.setItem(
+      "salesData",
+      JSON.stringify([...existing, ...newData])
+    );
+  };
+
+  // 🖨️ PRINT BILL
+  const handlePrint = () => {
+    if (bill.length === 0) {
+      alert("No items in bill ❗");
+      return;
+    }
+
+    saveSalesData(); // 🔥 IMPORTANT (this makes charts work)
+    window.print();
+  };
+
   return (
     <div className="billing">
       <h2>Billing</h2>
@@ -35,11 +66,11 @@ function Billing({
                 <button onClick={() => changeQty(item.key, 1)}>+</button>
               </td>
 
-              <td>{item.price}</td>
-              <td>{item.price * item.qty}</td>
+              <td>₹{item.price}</td>
+              <td>₹{item.price * item.qty}</td>
 
               <td>
-                <button onClick={() => removeItem(item.key)}>X</button>
+                <button onClick={() => removeItem(item.key)}>❌</button>
               </td>
             </tr>
           ))}
@@ -52,9 +83,10 @@ function Billing({
 
       <div className="actions">
         <button onClick={cancelBill}>Cancel Bill</button>
-        <button onClick={printBill}>Print Bill</button>
+
+        {/* 🔥 UPDATED PRINT BUTTON */}
+        <button onClick={handlePrint}>Print Bill</button>
       </div>
-     
     </div>
   );
 }
