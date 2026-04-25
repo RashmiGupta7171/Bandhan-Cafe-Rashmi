@@ -7,7 +7,6 @@ import "../App.css";
 function MainApp() {
   const [bill, setBill] = useState([]);
 
-  // ✅ ADD ITEM
   const addItem = (name, price, type) => {
     const key = name + "-" + type;
 
@@ -29,7 +28,6 @@ function MainApp() {
     }
   };
 
-  // ✅ CHANGE QUANTITY
   const changeQty = (key, step) => {
     setBill(
       bill
@@ -42,27 +40,20 @@ function MainApp() {
     );
   };
 
-  // ✅ REMOVE ITEM
   const removeItem = (key) => {
     setBill(bill.filter(item => item.key !== key));
   };
 
-  // ✅ CANCEL BILL
-  const cancelBill = () => {
-    setBill([]);
-  };
+  const cancelBill = () => setBill([]);
 
-  // ✅ GRAND TOTAL
   const grandTotal = bill.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
   );
 
-  // ✅ SAVE SALES DATA (IMPORTANT)
+  // ✅ SAVE SALES (for charts)
   const saveSalesData = () => {
     let sales = JSON.parse(localStorage.getItem("salesData")) || [];
-
-    // ⭐ IMPORTANT: correct date format
     const today = new Date().toLocaleDateString("en-GB");
 
     bill.forEach(item => {
@@ -76,21 +67,40 @@ function MainApp() {
     localStorage.setItem("salesData", JSON.stringify(sales));
   };
 
-  // ✅ PRINT BILL
-  const printBill = () => {
-    saveSalesData();   // ⭐ MUST
+  // 🔥 SEND REVENUE TO BACKEND
+  const sendRevenueToBackend = async () => {
+    const totalAmount = grandTotal;
+    const today = new Date().toLocaleDateString("en-GB");
+
+    try {
+      await fetch("http://localhost:5000/api/finance/add-sale", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          amount: totalAmount,
+          date: today
+        })
+      });
+    } catch (err) {
+      console.log("Error sending revenue:", err);
+    }
+  };
+
+  const printBill = async () => {
+    saveSalesData();
+    await sendRevenueToBackend(); // 🔥 CONNECTED
     window.print();
   };
 
   return (
     <div>
-      <h1>Bandhan Cafe</h1>
+      <h1>Bandhan Wine & Dine</h1>
 
       <div className="container">
-        {/* 🍽️ MENU */}
         <Menu menuData={menuData} addItem={addItem} />
 
-        {/* 🧾 BILLING */}
         <Billing
           bill={bill}
           changeQty={changeQty}

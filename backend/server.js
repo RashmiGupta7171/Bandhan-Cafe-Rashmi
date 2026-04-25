@@ -1,4 +1,4 @@
-const express = require("express");
+ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
@@ -14,21 +14,17 @@ app.use("/api/salary", require("./routes/salary"));
 app.use("/api/attendance", require("./routes/attendance"));
 app.use("/api/finance", require("./routes/finance"));
 
-// Test route
+// Test
 app.get("/", (req, res) => {
   res.send("Backend working ✅");
 });
 
-// ✅ MongoDB Connection (FIXED)
+// DB
 mongoose.connect("mongodb://127.0.0.1:27017/bandhanCafe")
   .then(() => {
     console.log("MongoDB Connected ✅");
-
-    // Start server ONLY after DB connects
     app.listen(5000, () => {
-      console.log("Server running on port 5000 🚀");
+      console.log("Server running 🚀");
     });
   })
-  .catch((err) => {
-    console.log("MongoDB Error ❌", err);
-  });
+  .catch(err => console.log(err));

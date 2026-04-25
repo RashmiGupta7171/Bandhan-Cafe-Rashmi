@@ -2,23 +2,23 @@ const express = require("express");
 const router = express.Router();
 const Salary = require("../models/SalaryModels");
 
-// ✅ Add salary record
-router.post("/", async (req, res) => {
-  const data = new Salary(req.body);
-  await data.save();
-  res.json({ message: "Salary added", data });
-});
-
-// ✅ Get all salary records
+// GET
 router.get("/", async (req, res) => {
   const data = await Salary.find();
   res.json(data);
 });
 
-// ✅ Delete salary record
+// ADD
+router.post("/", async (req, res) => {
+  const record = new Salary(req.body);
+  await record.save();
+  res.json(record);
+});
+
+// DELETE
 router.delete("/:id", async (req, res) => {
   await Salary.findByIdAndDelete(req.params.id);
-  res.json({ message: "Deleted successfully" });
+  res.json({ message: "Deleted" });
 });
 
 module.exports = router;

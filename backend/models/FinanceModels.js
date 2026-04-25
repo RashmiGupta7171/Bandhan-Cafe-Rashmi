@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const FinanceSchema = new mongoose.Schema({
+const financeSchema = new mongoose.Schema({
   date: String,
-  revenue: Number,
-  expenses: Number,
-  profit: Number,
+  revenue: { type: Number, default: 0 },
+  expenses: { type: Number, default: 0 },
+  profit: { type: Number, default: 0 },
 });
 
-module.exports = mongoose.model("Finance", FinanceSchema);
+module.exports = mongoose.model("Finance", financeSchema);
