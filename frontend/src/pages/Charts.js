@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
@@ -5,6 +6,12 @@ import {
 } from "recharts";
 
 function Charts() {
+  const navigate = useNavigate();
+
+const logout = () => {
+  localStorage.removeItem("isLoggedIn");
+  navigate("/");
+};
   const [data, setData] = useState([]);
   const [topItem, setTopItem] = useState(null);
 
@@ -57,6 +64,10 @@ function Charts() {
 
   return (
     <div style={styles.container}>
+      <div style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}>
+  <button onClick={() => navigate("/dashboard")}>⬅ Back</button>
+  <button onClick={logout}>🚪 Logout</button>
+</div>
       <h1>📊 Today’s Sales Dashboard</h1>
 
       {data.length === 0 ? (

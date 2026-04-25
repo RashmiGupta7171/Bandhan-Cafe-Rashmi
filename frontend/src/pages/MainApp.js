@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import Menu from "./Menu";
 import Billing from "./Billing";
@@ -6,6 +7,13 @@ import "../App.css";
 
 function MainApp() {
   const [bill, setBill] = useState([]);
+
+  const navigate = useNavigate();
+
+const logout = () => {
+  localStorage.removeItem("isLoggedIn");
+  navigate("/");
+};
 
   const addItem = (name, price, type) => {
     const key = name + "-" + type;
@@ -96,6 +104,10 @@ function MainApp() {
 
   return (
     <div>
+      <div style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}>
+  <button onClick={() => navigate("/dashboard")}>⬅ Back</button>
+  <button onClick={logout}>🚪 Logout</button>
+</div>
       <h1>Bandhan Wine & Dine</h1>
 
       <div className="container">
