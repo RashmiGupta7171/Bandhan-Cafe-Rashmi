@@ -9,7 +9,7 @@ function Billing({
   cancelBill
 }) {
 
-  // ✅ SAVE DATA FOR CHARTS
+  // 📊 Save data for charts
   const saveSalesData = () => {
     const existing = JSON.parse(localStorage.getItem("salesData")) || [];
 
@@ -29,14 +29,36 @@ function Billing({
     );
   };
 
-  // 🖨️ PRINT BILL
-  const handlePrint = () => {
+  // 🖨️ Print + Send Revenue
+  const handlePrint = async () => {
     if (bill.length === 0) {
       alert("No items in bill ❗");
       return;
     }
 
-    saveSalesData(); // 🔥 IMPORTANT (this makes charts work)
+    // ✅ 1. Save for charts
+    saveSalesData();
+
+    // ✅ 2. Send revenue to backend
+    try {
+      const today = new Date().toLocaleDateString("en-GB");
+
+      await fetch("http://localhost:5000/api/finance/add-sale", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: grandTotal,
+          date: today,
+        }),
+      });
+
+    } catch (err) {
+      console.log("Revenue update error:", err);
+    }
+
+    // 🖨️ Print
     window.print();
   };
 
@@ -83,8 +105,6 @@ function Billing({
 
       <div className="actions">
         <button onClick={cancelBill}>Cancel Bill</button>
-
-        {/* 🔥 UPDATED PRINT BUTTON */}
         <button onClick={handlePrint}>Print Bill</button>
       </div>
     </div>

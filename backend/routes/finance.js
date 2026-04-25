@@ -2,51 +2,66 @@ const express = require("express");
 const router = express.Router();
 const Finance = require("../models/FinanceModels");
 
-// GET
+// 📥 GET ALL RECORDS
 router.get("/", async (req, res) => {
-  const data = await Finance.find();
-  res.json(data);
-});
-
-// 🔥 ADD OR UPDATE (MAIN LOGIC)
-router.post("/add-sale", async (req, res) => {
-  const { amount, date } = req.body;
-
-  let record = await Finance.findOne({ date });
-
-  if (record) {
-    record.revenue += amount;
-    record.profit = record.revenue - record.expenses;
-    await record.save();
-  } else {
-    record = new Finance({
-      date,
-      revenue: amount,
-      expenses: 0,
-      profit: amount,
-    });
-    await record.save();
+  try {
+    const data = await Finance.find().sort({ date: -1 });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  res.json(record);
 });
 
-// UPDATE
+// 🔥 ADD OR UPDATE REVENUE
+router.post("/add-sale", async (req, res) => {
+  try {
+    const { amount, date } = req.body;
+
+    let record = await Finance.findOne({ date });
+
+    if (record) {
+      // 👉 SAME DAY → ADD REVENUE
+      record.revenue += amount;
+      record.profit = record.revenue - record.expenses;
+      await record.save();
+    } else {
+      // 👉 NEW DAY → CREATE RECORD
+      record = new Finance({
+        date,
+        revenue: amount,
+        expenses: 0,
+        profit: amount,
+      });
+      await record.save();
+    }
+
+    res.json(record);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✏️ UPDATE RECORD
 router.put("/:id", async (req, res) => {
-  const { revenue, expenses } = req.body;
+  try {
+    const { revenue, expenses } = req.body;
 
-  const record = await Finance.findById(req.params.id);
+    const record = await Finance.findById(req.params.id);
 
-  record.revenue = revenue;
-  record.expenses = expenses;
-  record.profit = revenue - expenses;
+    record.revenue = revenue;
+    record.expenses = expenses;
+    record.profit = revenue - expenses;
 
-  await record.save();
+    await record.save();
 
-  res.json(record);
+    res.json(record);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// DELETE
+// ❌ DELETE
 router.delete("/:id", async (req, res) => {
   await Finance.findByIdAndDelete(req.params.id);
   res.json({ message: "Deleted" });
