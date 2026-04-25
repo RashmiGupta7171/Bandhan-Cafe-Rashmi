@@ -20,7 +20,8 @@ app.get("/", (req, res) => {
 });
 
 // DB
-mongoose.connect("mongodb://127.0.0.1:27017/bandhanCafe")
+ mongoose.connect("mongodb://127.0.0.1:27017/bandhanCafe")
+//mongoose.connect("mongodb+srv://rashmi123:bandhan12@cluster0.gusenym.mongodb.net/?bandhanCafe?retryWrites=true7w=majority")
   .then(() => {
     console.log("MongoDB Connected ✅");
     app.listen(5000, () => {
