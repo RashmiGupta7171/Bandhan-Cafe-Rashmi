@@ -61,6 +61,7 @@ export const menuData = {
      { name: "Chicken Manchurian(Gravy)", half: 200, full: 360 },
      { name: "Chicken Sausage(6pc)", half: 150, full: 300 },
     { name: "Chicken Choila", half: 160, full: 300 },
+    { name: "Chicken Sadeko", half: 160, full: 250 },
   ],
 
 
@@ -107,7 +108,7 @@ export const menuData = {
     { name: "water", half: null, full: 30 },
     { name: "Xtreme", half: null, full: 150 },
   ],
-  
+
  "Alcohol": [
     { name: "Small Arna Beer", half: null, full: 220 },
     { name: "Big Arna Beer", half: null, full: 450 },
