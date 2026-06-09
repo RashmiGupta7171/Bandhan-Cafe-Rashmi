@@ -106,7 +106,8 @@ export const menuData = {
     { name: "RedBull", half: null, full: 120 },
     { name: "water", half: null, full: 30 },
     { name: "Xtreme", half: null, full: 150 },
-  ]
+  ],
+  
  "Alcohol": [
     { name: "Small Arna Beer", half: null, full: 220 },
     { name: "Big Arna Beer", half: null, full: 450 },
